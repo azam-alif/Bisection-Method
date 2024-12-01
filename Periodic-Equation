@@ -1,0 +1,72 @@
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+
+def func(x):
+    return math.sin(x)-0.5
+
+solve = []
+state = "positive"
+a = 0
+b = 1
+i = 0
+step = 1
+while True:
+    if func(a) * func(b) > 0:
+        if abs(func(a)) < 0.001:
+            solve.append(round(a, 3))
+        if state == "positive":
+            a += step
+            b += step
+        else:
+            a -= step
+            b -= step
+    else:
+        j = 0
+        while True:
+            c = (a + b) / 2
+            j += 1
+            if j == 1000:
+                break
+            if abs(a - b) < 0.001 and abs(func(c)) < 0.001:
+                solve.append(round(c, 3))
+                if state == "positive":
+                    a += step
+                    b += step
+                else:
+                    a -= step
+                    b -= step
+                break
+            elif func(c) < 0:
+                a = c
+            else:
+                b = c
+    i += 1
+    if i == 20:
+        if state == "negative":
+            break
+        i = 0
+        a = 0
+        b = -1
+        state = "negative"
+print(sorted(solve))
+
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif', size=10)  
+
+yn = []
+xn = np.linspace(-4, 4, 1000)
+for x in xn:
+    yn.append(func(x))
+
+plt.plot(xn, yn, label=r"$$\sin(x) - 0.5$$")
+plt.axhline(0, color="black", linewidth=1)
+plt.axvline(0, color="black", linewidth=1)
+
+plt.xlabel(r"$x$", fontsize=10)
+plt.ylabel(r"$f(x)$", fontsize=10)
+plt.title(r"\textbf{Graph of the Periodic Equation}", fontsize=12)
+plt.legend(fontsize=10)
+
+plt.savefig("/content/PeriodicEquation.png", dpi=300)
+plt.show()
